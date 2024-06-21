@@ -194,3 +194,64 @@ if uploaded_file is not None:
     
            # Show the plot
            st.pyplot(fig)
+        
+    # Question 17
+    if st.checkbox("Q17: What is the average number of confirmed cases per day globally?"):
+        average_daily_cases = data.groupby('Date')['Confirmed'].sum().mean()
+        st.write(f"Average daily confirmed cases globally: {average_daily_cases:.2f}")
+
+    # Question 18
+    if st.checkbox("Q18: Show the top 10 regions with the highest number of recovered cases."):
+        top_regions_recovered = data.groupby('Region')['Recovered'].sum().nlargest(10)
+        plt.figure(figsize=(12, 6))
+        sns.barplot(x=top_regions_recovered.index, y=top_regions_recovered.values)
+        plt.title('Top 10 Regions with Highest Number of Recovered Cases')
+        plt.xlabel('Region')
+        plt.ylabel('Number of Recovered Cases')
+        st.pyplot()
+
+    # Question 19
+    if st.checkbox("Q19: Show a line graph of the trend of confirmed cases over time for a selected region."):
+        regions = data['Region'].unique()
+        selected_region = st.selectbox("Select a region", regions)
+        selected_region_data = data[data['Region'] == selected_region]
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.plot(selected_region_data['Date'], selected_region_data['Confirmed'], marker='o')
+        ax.set_xlabel('Date')
+        ax.set_ylabel('Confirmed Cases')
+        ax.set_title(f'Trend of Confirmed Cases in {selected_region}')
+        st.pyplot(fig)
+
+    # Question 20
+    if st.checkbox("Q20: Show a stacked area plot of confirmed, deaths, and recovered cases over time globally."):
+        data_by_date = data.groupby('Date')[['Confirmed', 'Deaths', 'Recovered']].sum().reset_index()
+        fig, ax = plt.subplots(figsize=(12, 8))
+        ax.stackplot(data_by_date['Date'], data_by_date['Confirmed'], data_by_date['Deaths'], data_by_date['Recovered'], labels=['Confirmed', 'Deaths', 'Recovered'])
+        ax.set_xlabel('Date')
+        ax.set_ylabel('Number of Cases')
+        ax.set_title('Global COVID-19 Cases Over Time')
+        ax.legend()
+        st.pyplot(fig)
+
+    # Question 21
+    if st.checkbox("Q21: Compare the mortality rates (deaths/confirmed) between two selected regions."):
+        regions = data['Region'].unique()
+        region1 = st.selectbox("Select the first region", regions)
+        region2 = st.selectbox("Select the second region", regions)
+        mortality_rate_region1 = data[data['Region'] == region1]['Deaths'].sum() / data[data['Region'] == region1]['Confirmed'].sum()
+        mortality_rate_region2 = data[data['Region'] == region2]['Deaths'].sum() / data[data['Region'] == region2]['Confirmed'].sum()
+        st.write(f"Mortality rate in {region1}: {mortality_rate_region1:.4f}")
+        st.write(f"Mortality rate in {region2}: {mortality_rate_region2:.4f}")
+
+    # Question 22
+    if st.checkbox("Q22: Show a bar chart comparing the number of confirmed cases across different continents."):
+        # Assuming 'Continent' information is available in the dataset
+        data['Continent'] = data['Region'].apply(lambda x: get_continent(x))  # Implement get_continent() function as needed
+        continent_confirmed = data.groupby('Continent')['Confirmed'].sum()
+        plt.figure(figsize=(10, 6))
+        sns.barplot(x=continent_confirmed.index, y=continent_confirmed.values)
+        plt.title('Total Confirmed Cases by Continent')
+        plt.xlabel('Continent')
+        plt.ylabel('Number of Confirmed Cases')
+        st.pyplot()
+
