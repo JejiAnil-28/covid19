@@ -213,7 +213,7 @@ if uploaded_file is not None:
    
 
     # Question 19
-    if st.checkbox("Q21: Compare the mortality rates (deaths/confirmed) between two selected regions."):
+    if st.checkbox("Q19: Compare the mortality rates (deaths/confirmed) between two selected regions."):
         regions = data['Region'].unique()
         region1 = st.selectbox("Select the first region", regions)
         region2 = st.selectbox("Select the second region", regions)
